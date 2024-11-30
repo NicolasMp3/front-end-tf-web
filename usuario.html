@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Murais Criados</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    header {
+      background-color: #006400;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 35px;
+    }
+
+    header button {
+      background-color: white;
+      color: #006400;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    header button:hover {
+      background-color: #ddd;
+    }
+
+    main {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .content {
+      flex: 3;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
+
+    .mural {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .mural h2 {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .mural a {
+      color: #006400;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .mural a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar {
+      flex: 1;
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar div {
+      background-color: white;
+      padding: 15px;
+      border: 2px solid #006400;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 5px;
+    }
+
+    /* Responsividade para dispositivos móveis */
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      header h1 {
+        font-size: 30px;
+      }
+
+      .content, .sidebar {
+        padding: 15px;
+      }
+    }
+
+    footer {
+      background-color: #006400;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-top: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Murais Criados</h1>
+  <button><a href="/criar_mural.html" style="color: #006400; text-decoration: none;">Criar novo mural</a></button>
+</header>
+
+<main>
+  <div class="content">
+    <div class="mural">
+      <h2><a href="/mural.html?id=1">Ver Mural 1</a></h2>
+      <p>Descrição do mural 1, criado por [nome do usuário].</p>
+    </div>
+    <div class="mural">
+      <h2><a href="/mural.html?id=2">Ver Mural 2</a></h2>
+      <p>Descrição do mural 2, criado por [nome do usuário].</p>
+    </div>
+    <div class="mural">
+      <h2><a href="/mural.html?id=3">Ver Mural 3</a></h2>
+      <p>Descrição do mural 3, criado por [nome do usuário].</p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div>
+      <p>Assine nosso plano premium e tenha acesso a:</p>
+      <ul>
+        <li>Quantidade maior de murais</li>
+        <li>Possibilidades ilimitadas</li>
+      </ul>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <p>© 2024 - Todos os direitos reservados</p>
+</footer>
+
+</body>
+</html>

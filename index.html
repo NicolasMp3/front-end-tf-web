@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Site</title>
+    <style>
+        /* Reseta margens e preenchimentos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        /* Barra de navegação superior */
+        header {
+            background-color: #007a00; /* Verde */
+            padding: 10px 20px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 5px solid black; /* Borda preta fina */
+        }
+
+        /* Conteúdo da página */
+        .content {
+            height: calc(100vh - 150px); /* Altura total da viewport menos o espaço do header e footer */
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Centraliza verticalmente */
+            margin: 0 5%; /* Margens laterais */
+        }
+
+        /* Área das imagens */
+        .images {
+            width: 60%;
+        }
+
+        .image-box {
+            width: 90%;
+            height: 200px;
+            margin-bottom: 20px; /* Espaçamento fixo vertical entre imagens */
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black; /* Borda preta fina */
+        }
+
+        /* Botões */
+        .btn-container {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            writing-mode: horizontal-tb; /* Garante que o texto será horizontal */
+            padding: 1px 70px;
+            margin-bottom: 20px; /* Espaçamento fixo vertical entre botões */
+            font-size: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid black; /* Borda preta fina */
+            width: 80%; /* Largura fixa para consistência visual */
+        }
+
+        .btn-entrar {
+            background-color: #2dad32; /* Verde */
+            color: white;
+        }
+
+        .btn-criar {
+            background-color: #ddd; /* Cinza */
+            color: black;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: #007a00; /* Verde */
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 2px solid black; /* Borda preta fina */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bem-vindo ao Nosso Site</h1>
+    </header>
+
+    <div class="content">
+        <!-- Imagens à esquerda -->
+        <div class="images">
+            <div class="image-box">
+                <span>Imagem de sites sendo utilizado</span>
+            </div>
+            <div class="image-box">
+                <span>Descrição do site</span>
+            </div>
+        </div>
+
+        <!-- Botões à direita -->
+        <div class="btn-container">
+            <a href="login2.html">
+                <button class="btn btn-entrar">Entrar como usuário</button>
+            </a>
+            <a href="login.html">
+                <button class="btn btn-criar">Criar Conta</button>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 - Todos os direitos reservados</p>
+    </footer>
+</body>
+</html>

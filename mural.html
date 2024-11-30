@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Mural</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    header {
+      background-color: #006400;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 35px;
+    }
+
+    header button {
+      background-color: white;
+      color: #006400;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    header button:hover {
+      background-color: #ddd;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .mural {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 800px;
+      overflow-y: auto;
+    }
+
+    .mural h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .mural p {
+      margin-bottom: 10px;
+    }
+
+    .mural img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 5px;
+    }
+
+    footer {
+      background-color: #006400;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-top: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Visualizar Mural Criado</h1>
+  <button><a href="/criar_mural.html" style="color: #006400; text-decoration: none;">Criar novo mural</a></button>
+</header>
+
+<main>
+  <div class="mural" id="mural">
+    <h2 id="muralTitle">Título do Mural</h2>
+    <p id="muralText">Texto do mural será exibido aqui.</p>
+    <img id="muralImage" src="" alt="Imagem do mural" style="display:none;">
+  </div>
+</main>
+
+<footer>
+  <p>© 2024 - Todos os direitos reservados</p>
+</footer>
+
+<script>
+  // Carregar o mural a partir do localStorage
+  document.addEventListener('DOMContentLoaded', function() {
+    const muralTitle = localStorage.getItem('muralTitle');
+    const muralText = localStorage.getItem('muralText');
+    const muralImage = localStorage.getItem('muralImage');
+
+    // Exibir o título e texto do mural
+    if (muralTitle && muralText) {
+      document.getElementById('muralTitle').textContent = muralTitle;
+      document.getElementById('muralText').textContent = muralText;
+    }
+
+    // Exibir a imagem do mural, se houver
+    if (muralImage) {
+      const muralImageElement = document.getElementById('muralImage');
+      muralImageElement.src = muralImage;
+      muralImageElement.style.display = 'block';
+    } else {
+      document.getElementById('muralImage').style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
