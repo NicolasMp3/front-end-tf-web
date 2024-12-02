@@ -158,13 +158,13 @@
     const muralText = localStorage.getItem('muralText');
     const muralImage = localStorage.getItem('muralImage');
 
-    // Exibir o título e texto do mural
+    // Exibir o título e texto do mural, caso existam
     if (muralTitle && muralText) {
       document.getElementById('muralTitle').textContent = muralTitle;
       document.getElementById('muralText').textContent = muralText;
     }
 
-    // Exibir a imagem do mural, se houver
+    // Exibir a imagem do mural, caso exista
     if (muralImage) {
       const muralImageElement = document.getElementById('muralImage');
       muralImageElement.src = muralImage;
@@ -172,6 +172,17 @@
     } else {
       document.getElementById('muralImage').style.display = 'none';
     }
+  });
+
+  // Exibir/ocultar menu de opções ao clicar no ícone
+  document.getElementById('optionsCircle').addEventListener('click', function() {
+    const optionsMenu = document.getElementById('optionsMenu');
+    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Voltar ao clicar no botão "Voltar"
+  document.getElementById('goBack').addEventListener('click', function() {
+    window.history.back(); // Isso irá voltar à página anterior no histórico
   });
 </script>
 
