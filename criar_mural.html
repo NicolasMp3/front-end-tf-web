@@ -1,163 +1,245 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Criar Mural</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Mural</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f0f0f0;
+        }
 
-    header {
-      background-color: #006400;
-      padding: 15px;
-      color: white;
-      text-align: center;
-    }
+        header {
+            background-color: #006400;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
 
-    main {
-      padding: 20px;
-    }
+        header h1 {
+            margin: 0;
+            font-size: 35px;
+        }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+        .mural-area {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-color: #fff;
+            border: 2px solid #006400;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
 
-    label {
-      font-weight: bold;
-    }
+        .box {
+            position: absolute;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: move;
+        }
 
-    input, textarea, button {
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
+        .box img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
 
-    button {
-      background-color: #006400;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+        .button {
+            padding: 10px 20px;
+            background-color: #006400;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
 
-    button:hover {
-      background-color: #004d00;
-    }
+        .button:hover {
+            background-color: #004d1f;
+        }
 
-    .preview {
-      margin-top: 20px;
-    }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
 
-    .preview img {
-      max-width: 100%;
-      border-radius: 5px;
-    }
+        footer {
+            background-color: #006400;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 2px solid black;
+        }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-  </style>
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #006400;
+            bottom: 0;
+            right: 0;
+            cursor: nwse-resize;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-  <h1>Criar Mural</h1>
+    <h1>Criar Mural</h1>
 </header>
 
 <main>
-  <form id="muralForm">
-    <label for="title">Título do Mural:</label>
-    <input type="text" id="title" name="title" placeholder="Digite o título" required>
-
-    <label for="text">Texto do Mural:</label>
-    <textarea id="text" name="text" placeholder="Digite o texto do mural" rows="5" required></textarea>
-
-    <label for="image">Anexar Imagem:</label>
-    <input type="file" id="image" name="image" accept="image/*">
-
-    <div class="preview" id="previewContainer" style="display: none;">
-      <h3>Pré-visualização da Imagem:</h3>
-      <img id="imagePreview" alt="Pré-visualização da imagem">
-      
-      <div class="controls">
-        <label for="width">Largura (%):</label>
-        <input type="range" id="width" min="10" max="100" value="100">
-        
-        <label for="height">Altura (%):</label>
-        <input type="range" id="height" min="10" max="100" value="100">
-      </div>
+    <div class="mural-area" id="muralArea">
+        <!-- Caixas de texto e imagem serão adicionadas aqui -->
     </div>
 
-    <button type="button" id="saveButton">Salvar Mural</button>
-  </form>
+    <div class="button-container">
+        <button class="button" id="addTextBox">Adicionar Caixa de Texto</button>
+        <button class="button" id="addImageBox">Adicionar Caixa de Imagem</button>
+    </div>
 </main>
 
+<footer>
+    <p>© 2024 - Todos os direitos reservados</p>
+</footer>
+
 <script>
-  const imageInput = document.getElementById('image');
-  const previewContainer = document.getElementById('previewContainer');
-  const imagePreview = document.getElementById('imagePreview');
-  const widthSlider = document.getElementById('width');
-  const heightSlider = document.getElementById('height');
+    let imageBoxCount = 0;
+    let textBoxCount = 0;
 
-  // Exibir pré-visualização da imagem
-  imageInput.addEventListener('change', function() {
-    const file = imageInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imagePreview.src = e.target.result;
-        previewContainer.style.display = 'block';
-        // Resetar os sliders
-        widthSlider.value = 100;
-        heightSlider.value = 100;
-        imagePreview.style.width = '100%';
-        imagePreview.style.height = '100%';
-      };
-      reader.readAsDataURL(file);
-    } else {
-      previewContainer.style.display = 'none';
-      imagePreview.src = '';
+    // Função para adicionar caixa de imagem
+    document.getElementById('addImageBox').addEventListener('click', () => {
+        imageBoxCount++;
+        const newImageBox = document.createElement('div');
+        newImageBox.className = 'box';
+        newImageBox.id = 'imageBox' + imageBoxCount;
+
+        const img = document.createElement('img');
+        img.src = 'https://via.placeholder.com/150'; // Imagem padrão
+        newImageBox.appendChild(img);
+
+        // Adicionar botão para alterar imagem
+        const changeImageButton = document.createElement('button');
+        changeImageButton.textContent = 'Alterar Imagem';
+        changeImageButton.className = 'button';
+        changeImageButton.style.position = 'absolute';
+        changeImageButton.style.bottom = '10px';
+        changeImageButton.style.left = '10px';
+        changeImageButton.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.style.display = 'none';
+
+            input.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.body.appendChild(input);
+            input.click();
+            document.body.removeChild(input);
+        });
+
+        newImageBox.appendChild(changeImageButton);
+
+        // Adicionar alça de redimensionamento
+        const resizeHandle = document.createElement('div');
+        resizeHandle.className = 'resize-handle';
+        newImageBox.appendChild(resizeHandle);
+
+        // Configurar redimensionamento
+        resizeHandle.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startWidth = parseInt(document.defaultView.getComputedStyle(newImageBox).width, 10);
+            const startHeight = parseInt(document.defaultView.getComputedStyle(newImageBox).height, 10);
+
+            function doDrag(event) {
+                newImageBox.style.width = startWidth + event.clientX - startX + 'px';
+                newImageBox.style.height = startHeight + event.clientY - startY + 'px';
+            }
+
+            function stopDrag() {
+                document.removeEventListener('mousemove', doDrag);
+                document.removeEventListener('mouseup', stopDrag);
+            }
+
+            document.addEventListener('mousemove', doDrag);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        // Configurações iniciais de posição
+        newImageBox.style.top = `${Math.random() * 400}px`;
+        newImageBox.style.left = `${Math.random() * 500}px`;
+        newImageBox.style.width = '150px';
+        newImageBox.style.height = '150px';
+        document.getElementById('muralArea').appendChild(newImageBox);
+
+        makeDraggable(newImageBox);
+    });
+
+    // Função para adicionar caixa de texto
+    document.getElementById('addTextBox').addEventListener('click', () => {
+        textBoxCount++;
+        const newTextBox = document.createElement('div');
+        newTextBox.className = 'box';
+        newTextBox.id = 'textBox' + textBoxCount;
+        newTextBox.contentEditable = true;
+        newTextBox.innerHTML = 'Digite aqui...';
+        newTextBox.style.top = `${Math.random() * 400}px`;
+        newTextBox.style.left = `${Math.random() * 500}px`;
+        document.getElementById('muralArea').appendChild(newTextBox);
+        makeDraggable(newTextBox);
+    });
+
+    // Função para permitir o movimento dos elementos
+    function makeDraggable(element) {
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        element.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - element.offsetLeft;
+            offsetY = e.clientY - element.offsetTop;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                element.style.left = `${e.clientX - offsetX}px`;
+                element.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
     }
-  });
-
-  // Ajustar largura da imagem
-  widthSlider.addEventListener('input', function() {
-    imagePreview.style.width = widthSlider.value + '%';
-  });
-
-  // Ajustar altura da imagem
-  heightSlider.addEventListener('input', function() {
-    imagePreview.style.height = heightSlider.value + '%';
-  });
-
-  // Salvar mural no localStorage
-  document.getElementById('saveButton').addEventListener('click', function() {
-    const title = document.getElementById('title').value;
-    const text = document.getElementById('text').value;
-    const image = imagePreview.src; // URL da imagem carregada
-    const imageWidth = widthSlider.value;
-    const imageHeight = heightSlider.value;
-
-    // Armazenar os dados no localStorage
-    localStorage.setItem('muralTitle', title);
-    localStorage.setItem('muralText', text);
-    localStorage.setItem('muralImage', image);
-    localStorage.setItem('muralImageWidth', imageWidth);
-    localStorage.setItem('muralImageHeight', imageHeight);
-
-    // Redirecionar para a página do usuário
-    window.location.href = '/usuario.html';
-  });
 </script>
-
 </body>
 </html>
