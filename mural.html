@@ -1,23 +1,190 @@
-<script>
-  // Carregar os dados do mural
-  const title = localStorage.getItem('muralTitle');
-  const text = localStorage.getItem('muralText');
-  const image = localStorage.getItem('muralImage');
-  const imageWidth = localStorage.getItem('muralImageWidth') || '100';
-  const imageHeight = localStorage.getItem('muralImageHeight') || '100';
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Mural</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
 
-  // Exibir os dados na página
-  if (title) {
-    document.getElementById('muralTitle').textContent = title;
-  }
-  if (text) {
-    document.getElementById('muralText').textContent = text;
-  }
-  if (image) {
-    const muralImage = document.getElementById('muralImage');
-    muralImage.src = image;
-    muralImage.style.width = imageWidth + '%';
-    muralImage.style.height = imageHeight + '%';
-    muralImage.style.display = 'block';
-  }
+    header {
+      background-color: #006400;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 35px;
+    }
+
+    header .options-circle {
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      color: #006400;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+
+    header .options-circle:hover {
+      background-color: #ddd;
+    }
+
+    .options-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      padding: 10px;
+      min-width: 250px;
+      z-index: 20;
+    }
+
+    .options-menu .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .options-menu button {
+      background: none;
+      border: none;
+      color: #006400;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 5px 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    .options-menu button:hover {
+      background-color: #f0f0f0;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .mural {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 800px;
+      overflow-y: auto;
+    }
+
+    .mural h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .mural p {
+      margin-bottom: 10px;
+    }
+
+    .mural img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 5px;
+    }
+
+    footer {
+      background-color: #006400;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      border-top: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Mural Criado</h1>
+  <div class="options-circle" id="optionsCircle">
+    <span>...</span>
+  </div>
+  <div class="options-menu" id="optionsMenu">
+      <div class="button-container">
+          <button id="goBack">Voltar</button>
+      </div>
+  </div>
+</header>
+
+<main>
+  <div class="mural" id="mural">
+    <h2 id="muralTitle">Título do Mural</h2>
+    <p id="muralText">Texto do mural será exibido aqui.</p>
+    <img id="muralImage" src="" alt="Imagem do mural" style="display:none;">
+  </div>
+</main>
+
+<footer>
+  <p>© 2024 - Todos os direitos reservados</p>
+</footer>
+
+<script>
+  // Carregar o mural a partir do localStorage
+  document.addEventListener('DOMContentLoaded', function() {
+    const muralTitle = localStorage.getItem('muralTitle');
+    const muralText = localStorage.getItem('muralText');
+    const muralImage = localStorage.getItem('muralImage');
+
+    // Exibir o título e texto do mural, caso existam
+    if (muralTitle && muralText) {
+      document.getElementById('muralTitle').textContent = muralTitle;
+      document.getElementById('muralText').textContent = muralText;
+    }
+
+    // Exibir a imagem do mural, caso exista
+    if (muralImage) {
+      const muralImageElement = document.getElementById('muralImage');
+      muralImageElement.src = muralImage;
+      muralImageElement.style.display = 'block';
+    } else {
+      document.getElementById('muralImage').style.display = 'none';
+    }
+  });
+
+  // Exibir/ocultar menu de opções ao clicar no ícone
+  document.getElementById('optionsCircle').addEventListener('click', function() {
+    const optionsMenu = document.getElementById('optionsMenu');
+    optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Voltar ao clicar no botão "Voltar"
+  document.getElementById('goBack').addEventListener('click', function() {
+    window.history.back(); // Isso irá voltar à página anterior no histórico
+  });
 </script>
+
+</body>
+</html>
