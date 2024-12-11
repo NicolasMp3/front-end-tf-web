@@ -116,6 +116,7 @@
             width: 100px;
             height: 100px;
             object-fit: cover;
+            border-radius: 5px;
         }
 
         .button {
@@ -175,7 +176,6 @@
         <button class="button" id="addImageBox">Adicionar Caixa de Imagem</button>
     </div>
 
-    <!-- Botões fora do menu -->
     <div class="action-buttons">
         <button class="button" id="undoAction">Retroceder</button>
         <button class="button" id="redoAction">Avançar</button>
@@ -187,96 +187,70 @@
 </footer>
 
 <script>
-    let textBoxCount = 0;
-    let imageBoxCount = 0;
-    let removedElements = [];
-    let restoredElements = [];
-
-    // Função para adicionar caixa de texto
-    document.getElementById('addTextBox').addEventListener('click', () => {
-        textBoxCount++;
-        const newTextBox = document.createElement('div');
-        newTextBox.className = 'box';
-        newTextBox.id = 'textBox' + textBoxCount;
-        newTextBox.contentEditable = true;
-        newTextBox.innerHTML = 'Digite aqui...';
-        newTextBox.style.top = `${Math.random() * 400}px`;
-        newTextBox.style.left = `${Math.random() * 500}px`;
-        document.getElementById('muralArea').appendChild(newTextBox);
-        makeDraggable(newTextBox);
-    });
-
-    // Função para adicionar caixa de imagem
-    document.getElementById('addImageBox').addEventListener('click', () => {
-        imageBoxCount++;
-        const newImageBox = document.createElement('div');
-        newImageBox.className = 'box';
-        newImageBox.id = 'imageBox' + imageBoxCount;
-        const img = document.createElement('img');
-        img.src = 'https://via.placeholder.com/100'; // Substituir por um link real de imagem
-        newImageBox.appendChild(img);
-        newImageBox.style.top = `${Math.random() * 400}px`;
-        newImageBox.style.left = `${Math.random() * 500}px`;
-        document.getElementById('muralArea').appendChild(newImageBox);
-        makeDraggable(newImageBox);
-    });
-
-    // Função para permitir o movimento dos elementos
-    function makeDraggable(element) {
-        let isDragging = false;
-        let offsetX, offsetY;
-
-        element.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - element.offsetLeft;
-            offsetY = e.clientY - element.offsetTop;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                element.style.left = `${e.clientX - offsetX}px`;
-                element.style.top = `${e.clientY - offsetY}px`;
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-    }
-
-    // Mostrar e ocultar o menu de opções ao clicar no círculo
     document.getElementById('optionsCircle').addEventListener('click', () => {
         const menu = document.getElementById('optionsMenu');
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Ação do botão 'Voltar'
+    document.addEventListener('click', (event) => {
+        const menu = document.getElementById('optionsMenu');
+        const circle = document.getElementById('optionsCircle');
+        if (menu.style.display === 'block' && !menu.contains(event.target) && event.target !== circle) {
+            menu.style.display = 'none';
+        }
+    });
+
+    let textBoxCount = 0;
+    let imageBoxCount = 0;
+
+    document.getElementById('addTextBox').addEventListener('click', () => {
+        textBoxCount++;
+        const textBox = document.createElement('div');
+        textBox.className = 'box';
+        textBox.id = 'textBox' + textBoxCount;
+        textBox.contentEditable = true;
+        textBox.innerText = 'Digite aqui...';
+        textBox.style.top = `${Math.random() * 400}px`;
+        textBox.style.left = `${Math.random() * 500}px`;
+        document.getElementById('muralArea').appendChild(textBox);
+    });
+
+    document.getElementById('addImageBox').addEventListener('click', () => {
+        imageBoxCount++;
+        const imageBox = document.createElement('div');
+        imageBox.className = 'box';
+        imageBox.id = 'imageBox' + imageBoxCount;
+
+        const img = document.createElement('img');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        imageBox.appendChild(fileInput);
+        imageBox.appendChild(img);
+        imageBox.style.top = `${Math.random() * 400}px`;
+        imageBox.style.left = `${Math.random() * 500}px`;
+        document.getElementById('muralArea').appendChild(imageBox);
+    });
+
     document.getElementById('goBack').addEventListener('click', () => {
-        window.location.href = 'usuario.html'; // Volta para a página de usuário
-    });
-
-    // Ação do botão 'Salvar'
-    document.getElementById('saveMural').addEventListener('click', () => {
-        alert('Mural salvo!'); // Ação de salvar, pode ser melhorada conforme necessário
-    });
-
-    // Função para retroceder (remover) o último elemento
-    document.getElementById('undoAction').addEventListener('click', () => {
-        const lastElement = document.querySelector('.box:last-child');
-        if (lastElement) {
-            removedElements.push(lastElement);
-            lastElement.remove();
-        }
-    });
-
-    // Função para avançar (restaurar) o último elemento removido
-    document.getElementById('redoAction').addEventListener('click', () => {
-        const lastRemoved = removedElements.pop();
-        if (lastRemoved) {
-            restoredElements.push(lastRemoved);
-            document.getElementById('muralArea').appendChild(lastRemoved);
-        }
+        // Fechar o menu ao clicar no botão "Voltar"
+        document.getElementById('optionsMenu').style.display = 'none';
+        
+        // Redirecionar para a página anterior (index2.html) dentro da pasta
+        window.location.href = "/Index2.html"; // Certifique-se de que este caminho está correto com base na estrutura de pastas
     });
 </script>
+
 </body>
 </html>
