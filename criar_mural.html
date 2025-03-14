@@ -4,90 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Mural</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            background-color: #f0f0f0;
         }
 
         header {
             background-color: #006400;
             padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 35px;
-        }
-
-        header .options-circle {
-            width: 40px;
-            height: 40px;
-            background-color: white;
-            color: #006400;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 10;
-        }
-
-        header .options-circle:hover {
-            background-color: #ddd;
-        }
-
-        .options-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            padding: 10px;
-            min-width: 250px;
-            z-index: 20;
-        }
-
-        .options-menu .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .options-menu button {
-            background: none;
-            border: none;
-            color: #006400;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 5px 0;
-            width: 100%;
             text-align: center;
-        }
-
-        .options-menu button:hover {
-            background-color: #f0f0f0;
         }
 
         main {
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
         .mural-area {
@@ -97,7 +32,6 @@
             background-color: #fff;
             border: 2px solid #006400;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             overflow: hidden;
         }
@@ -105,18 +39,18 @@
         .box {
             position: absolute;
             padding: 10px;
-            border: 1px solid #ccc;
             background-color: #fff;
+            border: 1px solid #ccc;
             border-radius: 5px;
+            cursor: grab;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            cursor: move;
         }
 
         .box img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
+            max-width: 200px;
+            max-height: 200px;
             border-radius: 5px;
+            display: block;
         }
 
         .button {
@@ -126,28 +60,11 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            margin-top: 20px;
+            margin: 5px;
         }
 
         .button:hover {
             background-color: #004d1f;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        footer {
-            background-color: #006400;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            border-top: 2px solid black;
         }
     </style>
 </head>
@@ -155,100 +72,111 @@
 
 <header>
     <h1>Criar Mural</h1>
-    <div class="options-circle" id="optionsCircle">
-        <span>...</span>
-    </div>
-    <div class="options-menu" id="optionsMenu">
-        <div class="button-container">
-            <button id="saveMural">Salvar</button>
-            <button id="goBack">Voltar</button>
-        </div>
-    </div>
 </header>
 
 <main>
-    <div class="mural-area" id="muralArea">
-        <!-- Caixas de texto e imagem serão adicionadas aqui -->
-    </div>
+    <div class="mural-area" id="muralArea"></div>
 
-    <div class="button-container">
-        <button class="button" id="addTextBox">Adicionar Caixa de Texto</button>
-        <button class="button" id="addImageBox">Adicionar Caixa de Imagem</button>
-    </div>
-
-    <div class="action-buttons">
-        <button class="button" id="undoAction">Retroceder</button>
-        <button class="button" id="redoAction">Avançar</button>
-    </div>
+    <button class="button" id="addTextBox">Adicionar Caixa de Texto</button>
+    <button class="button" id="addImageBox">Adicionar Caixa de Imagem</button>
+    <button class="button" id="undoAction">Desfazer</button>
+    <button class="button" id="downloadImage">Baixar como Imagem</button>
 </main>
 
-<footer>
-    <p>© 2024 - Todos os direitos reservados</p>
-</footer>
-
 <script>
-    document.getElementById('optionsCircle').addEventListener('click', () => {
-        const menu = document.getElementById('optionsMenu');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
+    let elements = [];
 
-    document.addEventListener('click', (event) => {
-        const menu = document.getElementById('optionsMenu');
-        const circle = document.getElementById('optionsCircle');
-        if (menu.style.display === 'block' && !menu.contains(event.target) && event.target !== circle) {
-            menu.style.display = 'none';
-        }
-    });
+    function makeDraggable(element) {
+        let offsetX, offsetY, isDragging = false;
 
-    let textBoxCount = 0;
-    let imageBoxCount = 0;
+        element.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - element.getBoundingClientRect().left;
+            offsetY = e.clientY - element.getBoundingClientRect().top;
+            element.style.cursor = "grabbing";
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let x = e.clientX - offsetX;
+            let y = e.clientY - offsetY;
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            element.style.cursor = "grab";
+        });
+    }
 
     document.getElementById('addTextBox').addEventListener('click', () => {
-        textBoxCount++;
         const textBox = document.createElement('div');
         textBox.className = 'box';
-        textBox.id = 'textBox' + textBoxCount;
         textBox.contentEditable = true;
         textBox.innerText = 'Digite aqui...';
         textBox.style.top = `${Math.random() * 400}px`;
         textBox.style.left = `${Math.random() * 500}px`;
+
         document.getElementById('muralArea').appendChild(textBox);
+        elements.push(textBox);
+        makeDraggable(textBox);
     });
 
     document.getElementById('addImageBox').addEventListener('click', () => {
-        imageBoxCount++;
         const imageBox = document.createElement('div');
         imageBox.className = 'box';
-        imageBox.id = 'imageBox' + imageBoxCount;
+        imageBox.style.top = `${Math.random() * 400}px`;
+        imageBox.style.left = `${Math.random() * 500}px`;
 
-        const img = document.createElement('img');
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    const img = document.createElement('img');
                     img.src = e.target.result;
+                    imageBox.innerHTML = '';
+                    imageBox.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        imageBox.appendChild(fileInput);
-        imageBox.appendChild(img);
-        imageBox.style.top = `${Math.random() * 400}px`;
-        imageBox.style.left = `${Math.random() * 500}px`;
+        document.body.appendChild(fileInput);
+        fileInput.click();
+
         document.getElementById('muralArea').appendChild(imageBox);
+        elements.push(imageBox);
+        makeDraggable(imageBox);
     });
 
-    document.getElementById('goBack').addEventListener('click', () => {
-        // Fechar o menu ao clicar no botão "Voltar"
-        document.getElementById('optionsMenu').style.display = 'none';
-        
-        // Redirecionar para a página anterior (index2.html) dentro da pasta
-        window.location.href = "/usuario.html"; // Certifique-se de que este caminho está correto com base na estrutura de pastas
+    document.getElementById('undoAction').addEventListener('click', () => {
+        if (elements.length > 0) {
+            let lastElement = elements.pop();
+            lastElement.remove();
+        }
+    });
+
+    document.getElementById('downloadImage').addEventListener('click', function() {
+        const muralArea = document.querySelector('#muralArea');
+
+        html2canvas(muralArea).then(canvas => {
+            const dataURL = canvas.toDataURL('image/png');
+
+            const link = document.createElement('a');
+            link.download = 'meu-mural.png';
+            link.href = dataURL;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
     });
 </script>
 
