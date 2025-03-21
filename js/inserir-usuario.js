@@ -26,6 +26,10 @@ async function inserirUsuario(e) {
       senha: document.getElementById('senha').value
     };
 
+    console.log(dados);
+
+
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {

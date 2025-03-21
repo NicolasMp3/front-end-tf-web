@@ -1,50 +1,55 @@
-import { verificarAutenticacao } from './autorizar.js';
+// Seleciona o botão de login pelo ID e adiciona um evento de clique para chamar a função autenticar
+const botaoLogin = document.querySelector('#entrar');
+botaoLogin.addEventListener('click', autenticar);
 
-(async () => {
-  const autenticado = await verificarAutenticacao();
-  const overlay = document.getElementById('loading-overlay');
-  const conteudo = document.getElementById('conteudo-protegido');
+// Seleciona a área onde as mensagens de status serão exibidas
+const areaMensagem = document.getElementById('msg');
 
-  if (autenticado) {
-    overlay.remove(); // Remove o overlay
-    conteudo.style.display = 'block'; // Mostra o conteúdo
-  }
-})();
+// Função assíncrona responsável por autenticar o usuário
+async function autenticar(e) {
 
-const botaoSalvar = document.getElementById('submit');
-botaoSalvar.addEventListener('click', inserirUsuario);
+	// Impede que o formulário recarregue a página ao enviar os dados
+  e.preventDefault(); 
 
-const url = "https://back-end-tf-web-liard.vercel.app/login";
-const token = localStorage.getItem('jwt');
+  // Exibe uma mensagem temporária informando que a requisição está em andamento
+  document.getElementById('msg').innerText = "Aguarde... ";
 
-async function inserirUsuario(e) {
-  e.preventDefault();
+  // Coleta os valores digitados nos campos de email e senha
+  const dados = {
+    email: document.getElementById('email').value,
+    senha: document.getElementById('senha').value
+  };
+
+  // Define a URL da API que processará a autenticação
+  const url = "https://back-end-tf-web-liard.vercel.app/login";
+
   try {
-    const dados = {
-      nome: document.getElementById('nome').value,
-      email: document.getElementById('email').value,
-      senha: document.getElementById('senha').value
-    };
-
+    // Envia uma requisição HTTP POST para a API com os dados do usuário
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'POST', 
       headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': token
+        'Content-Type': 'application/json' // Define que o conteúdo enviado será em formato JSON
       },
-      body: JSON.stringify(dados)
+      body: JSON.stringify(dados) // Converte o objeto "dados" para JSON antes de enviar
     });
 
+    // Se a resposta da API não for bem-sucedida, lança um erro
     if (!response.ok) {
-      throw new Error("Erro na requisição: " + response.status);
+      throw new Error("Email/Senha incorretos! - " + response.status);
     }
 
+    // Converte a resposta da API para JSON
     const data = await response.json();
-    console.log(data);
-    alert("Usuário inserido com sucesso!");
+
+    // Armazena o token JWT no localStorage para manter a sessão do usuário
+    localStorage.setItem('jwt', data.token);
+
+    // Exibe uma mensagem de sucesso na interface do usuário em verde juntamente com o Token gerado
+    window.location.href = 'usuario.html';
 
   } catch (error) {
-    console.error("Erro:", error);
-    alert("Usuário não inserido");
+    // Exibe uma mensagem de erro na interface do usuário em vermelho
+    areaMensagem.style = "color:red";
+    areaMensagem.innerHTML = error;
   }
 }
